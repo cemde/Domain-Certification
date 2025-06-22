@@ -1,0 +1,14 @@
+name: "task_data" # "task_data_collection" # "task_data"
+task: "sort" # "sort,add,reverse-sort,even-odd" # if multiple comma seperate "sort, add"
+modality: "int"
+max_sequence_length: 49 # maximum number of numbers in a sequence
+num_int: 49 # the largest number in the sequence (inclusive). Sampling from [0, max_number]
+num_char: 249
+constant_sequence_length: False # if True, all sequences will be of length max_sequence_length. If False, sequences will be of random length between 1 and max_sequence_length
+train_size: 1_000_000 # number of sequences in the training set
+val_size: 64 # number of sequences in the validation set
+test_size: 1024 # number of sequences in the test set
+return_labels: False
+return_sequence: "full" # full, partial-random, partial-response. full: the full sequence is given. partial-random: a random remainder of the sequence is given. partial-response: a random subset of the sequence is given. partial-response only returns response for seq2seq training.
+training_tasks: ["seq2seq", "causal"]
+domain: "task_data"

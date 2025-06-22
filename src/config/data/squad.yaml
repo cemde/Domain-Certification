@@ -1,0 +1,14 @@
+name: "squad"
+train_size: -1 # number of sequences in the training set
+val_size: 32 # number of sequences in the validation set
+test_size: -1 # number of sequences in the test set
+return_sequence: "full" # full, partial-random, partial-response. full: the full sequence is given. partial-random: a random remainder of the sequence is given. partial-response: a random subset of the sequence is given. partial-response only returns response for seq2seq training.
+return_labels: False
+training_tasks: ["seq2seq", "causal"]
+debug: False
+truncate_sequence_to: 1024
+min_response_length: 5
+sequence_prefix: "Instruction: Provide a detailed explanation, including background information."
+domain: "medical_qa"
+use_chat_template: False
+categories: "all"

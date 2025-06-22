@@ -1,0 +1,8 @@
+FILL_IN_YOUR_SYSTEM_NAME_AND_PATHS_BELOW: # <--- TODO
+  PROJECT_DIR: ""
+  DATA_DIR: ""
+  LOG_DIR: ""
+  ARTIFACTS_DIR: ""
+  USE_GPU: True # does this system have GPUs?
+  NUM_WORKERS: 16 # how many workers?
+  NETWORK: online # does the cluster have internet access on compute nodes?

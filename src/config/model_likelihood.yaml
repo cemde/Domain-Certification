@@ -1,0 +1,53 @@
+defaults:
+  - _self_
+  - hydra: default
+  - data: pubmedqa
+
+model:
+  name_or_path: "meta-llama/Meta-Llama-3-8B"
+  source: hf
+  temperature: 1.0
+  top_k: -1
+  device: 0
+  target_distribution: "y|x"
+  precision: "bf16"
+  tokenizer:
+    name_or_path:
+    source:
+    add_pad_token: True
+
+generator:
+  name_or_path: cemde/Domain-Certification-MedQA-Guide-Finetuned
+  source: hf
+  temperature: 1.0
+  top_k: -1
+  device: 0
+  target_distribution: "y"
+  precision: "none"
+  tokenizer:
+    name_or_path:
+    source:
+    add_pad_token: False
+
+tokenizers_match: False # True if the tokenizers for models $L$ and $G$ are functionally the same, False otherwise.
+
+run:
+  seed: 23633
+  compile: True
+
+inference:
+  task: "causal" # "seq2seq" or "causal"
+  batch_size: 16
+  prompt_length: "dataset" # can be set to "<int>" or "dataset". In the first case, the query+response will be cut after <int> tokens. Otherwise the natural split of Q and A will be used.
+  drop_last_batch: True # should be True. False can lead to some errors when concatenating the likelihoods.
+  shuffle_batches: False # should be False for reproducibility. Can however bias the dataset if not previously shuffled and drop_last_batch is True.
+
+data_config_name: None # DO NOT SET. Will be dome automatically
+
+log:
+  print_to_file: False
+
+
+# documentation:
+# If ...tokenizer.name_or_path is None, name_or_path and source will be set to the same value as the model / generator.
+

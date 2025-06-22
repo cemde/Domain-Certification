@@ -1,0 +1,72 @@
+defaults:
+  - _self_
+  - hydra: default
+  - data: pubmedqa
+
+tokenizer:
+  name_or_path: meta-llama/Meta-Llama-3-8B
+  source: hf
+  add_pad_token: True
+
+model:
+  name_or_path: meta-llama/Meta-Llama-3-8B
+  source: hf
+  generation_max_new_tokens: 120 # -1 means "auto"
+  load_weights_in_8_bit: False # TODO does not work
+  temperature: 1.0
+  top_k: -1
+  device: 0
+  precision: "bf16"
+  add_pad_token: True
+  tokenizer:
+    name_or_path:
+    source:
+    add_pad_token: True
+
+generator:
+  name_or_path: model.architecture=cemde/Domain-Certification-MedQA-Guide-Base model.source=hf # medical_qa/lucky-oath-523/checkpoint-24576
+  source: hf
+  load_weights_in_8_bit: False # TODO does not work
+  temperature: 1.0
+  top_k: -1
+  device: 1
+  precision: "bf16"
+  tokenizer:
+    name_or_path:
+    source:
+    add_pad_token: False
+
+tokenizers_match: True
+
+meta_model:
+  divergence: "renyi_inf"
+  k: 4
+  T: 1
+  distribution_model: "y|x"
+  distribution_generator: "y"
+
+judge:
+  enabled: False
+  name_or_path: "meta-llama/Meta-Llama-3.1-8B"
+  template: "medical_qa"
+  device: 1
+  precision: "bf16"
+  decision_strategy: "regression"
+  regression_model_path: "judge_regression/medical_qa.pth"
+
+log:
+  mode: "online"
+  tags: [] # e.g. ["Debug"]
+
+run:
+  seed: 23633
+  compile: True
+  debug: False
+
+# topic used for the judge
+topic: "Medicine, Clinical Knowledge, Population Health, Biology"
+
+data_config_name: None
+
+data:
+  split: "test"

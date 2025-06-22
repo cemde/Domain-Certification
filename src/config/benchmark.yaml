@@ -1,0 +1,27 @@
+defaults:
+  - _self_
+  - hydra: default
+  - data: pubmedqa
+
+model:
+  name_or_path: "meta-llama/Meta-Llama-3-8B" # Big model
+  load_weights_in_8_bit: False # TODO does not work
+  source: hf
+
+run:
+  seed: 23633
+  compile: True
+
+inference:
+  # mixed_precision: True
+  temperature: 1.0
+  top_k: -1
+  predict_n_sequences: 1
+  sample: True
+  task: "causal" # "seq2seq" or "causal"
+  batch_size: 256
+  prompt_length: "5"
+
+log:
+  print_examples: False
+  save_results: True  # for debugging turn this to True.

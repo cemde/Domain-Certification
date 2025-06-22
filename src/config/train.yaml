@@ -1,0 +1,92 @@
+defaults:
+  - _self_
+  - hydra: default
+  - data: pubmedqa
+
+# hydra:
+#   output_subdir: null
+
+tokenizer:
+  name: meta-llama/Meta-Llama-3-8B # meta-llama/Meta-Llama-3-8B
+  source: "hf" # hf: hugginface identifier, # local: folder inside tokenizer directory
+  padding_side: "right"
+  overwrite_pad_with_eos_token: False # if true tokenizer.pad_token = tokenizer.eos_token. do not use with causal modelling.
+  add_pad_token: True # if true, adds padding token to the tokenizer if it does not exist.
+  # adds_eos: True TODO. my tokenizer automatically adds eos. llama doesnt.
+
+model:
+  architecture: "gpt-xs"
+  source: "local" # hf: hugginface identifier, # local: folder inside model directory
+  context_length: 1024 # 640 # 128 / 256 for shakespeare
+  generation_max_length: 1024 # -1 means "auto"
+  load_weights_in_8_bit: False # TODO does not work
+  residual_dropout: 0.2 # default 0.1
+  embedding_dropout: 0.1 # default 0.1
+  attention_dropout: 0.2 # default 0.1
+
+run:
+  seed: 23633
+  compile: False
+  load_data_in_parallel: False
+  debug: False
+  eval_accumulation_steps: 1 # every n eval batch, they are sent to CPU. 1 saves GPU memory.
+  eval_before_training: True
+
+training:
+  task: "causal" # "seq2seq" or "causal"
+  mixed_precision: True
+  group_by_length: False
+  lora:
+    enabled: False
+    alpha: 32
+    dropout: 0.1
+    rank: 8
+  ddp_find_unused_parameters: False
+
+optim:
+  name: "adamw"
+  lr: 5.e-3 # 3.e-4 # 5e-2
+  weight_decay: 0.1 # 0.01
+  warmup_steps: 500 # 0
+  lr_scheduler_type: "cosine" # "constant"
+  per_device_batch_size: 16
+  overall_batch_size: 128
+  num_epochs: 20 # 1000
+
+log:
+  eval_steps: 64
+  logging_steps: 8
+  save_steps: 512
+  mode: "disabled" # online, offline or disabled
+  tags: [] # ["Debug", "TaskData"] # ["Shakespeare"]
+  print_data_examples_on_start_up: False
+  print_config: True
+
+metrics:
+  perplexity:
+    enabled: True # TODO doesnt work
+
+callbacks:
+  generate_text:
+    batch_size: 16
+    num_samples: 32 # number of sequences to generate
+    prompt_length: "dataset" # 64
+  print:
+    enabled: True
+    num_samples: 32 # number of sequences to print
+    output_to_console: False
+    output_to_wandb: True
+  seq2seq_metrics:
+    enabled: False
+    num_examples: 32 # number of sequences to check
+  multi_dataset_seq2seq_metrics:
+    enabled: False
+    num_examples: 8 # number of sequences to check
+  metrics:
+    enabled: True
+    rouge:
+      enabled: True
+    bleu:
+      enabled: True
+    bertscore:
+      enabled: False # TODO doesnt work yet

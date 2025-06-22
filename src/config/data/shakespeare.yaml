@@ -1,0 +1,10 @@
+name: "shakespeare"
+train_size: -1 # number of sequences in the training set
+val_size: 64 # number of sequences in the validation set
+test_size: 1024 # number of sequences in the test set
+return_labels: False
+return_sequence: full
+prepend_bos: True
+append_eos: False
+training_tasks: ["causal"]
+domain: "shakespeare"
